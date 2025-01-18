@@ -11,7 +11,55 @@ const BACKEND_URL = process.env.BACKEND_URL;
 
 const endpoints = {
   DOWNLOAD_EXPORT: "/exports/download",
+  CREATE_EXPORT: "/exports/:designId",
+  GET_EXPORT_STATUS: "/exports/:exportId/status",
 };
+
+router.post(endpoints.CREATE_EXPORT, async (req, res) => {
+  const { designId } = req.params;
+
+  try {
+    const response = await req.client.post({
+      url: "/v1/exports",
+      body: {
+        "design_id": designId,
+        "format": {
+          "type": "png",
+        }
+      },
+    });
+
+    if (response.error) {
+      return res.status(400).json({ error: response.error });
+    }
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error("Error creating export job:", error);
+    return res.status(500).json({ error: "Failed to create export job" });
+  }
+});
+
+router.get(endpoints.GET_EXPORT_STATUS, async (req, res) => {
+  const { exportId } = req.params;
+
+  try {
+    const response = await req.client.get({
+      url: `/v1/exports/${exportId}`,
+    });
+  
+    console.log(response);
+
+    if (response.error) {
+      return res.status(400).json({ error: response.error });
+    }
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error("Error checking export status:", error);
+    return res.status(500).json({ error: "Failed to check export status" });
+  }
+});
 
 /**
  * NOTE: Exported image urls from Canva expire after some time, so you should
@@ -26,7 +74,7 @@ router.post(endpoints.DOWNLOAD_EXPORT, async (req, res) => {
   // First, if a productID is provided return early if no product was found or
   // if no design exists for the product.
   const product = data.products.find(
-    (product) => product.id === requestBody.productId,
+    (product) => product.id === requestBody.productId
   );
   if (requestBody.productId) {
     if (!product) {

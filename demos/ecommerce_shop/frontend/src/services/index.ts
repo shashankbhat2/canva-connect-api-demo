@@ -1,28 +1,22 @@
 import { createClient } from "@hey-api/client-fetch";
-import { Assets } from "./asset";
-import { Autofill } from "./autofill";
-import { Designs } from "./design";
 import { Exports } from "./export";
+import { Designs } from "./designs";
 import { Users } from "./user";
-import { CANVA_HOST } from "src/config";
+import { BACKEND_HOST } from "src/config";
 
-export * from "./api";
 export * from "./auth";
+export * from "./designs";
 
 export type Services = {
-  assets: Assets;
-  autofill: Autofill;
-  designs: Designs;
   exports: Exports;
   users: Users;
+  designs: Designs;
 };
 
-export function getUserClient(token?: string) {
+export function getUserClient() {
   const localClient = createClient({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    baseUrl: CANVA_HOST,
+    credentials: "include",
+    baseUrl: BACKEND_HOST,
   });
 
   localClient.interceptors.response.use((res) => {
@@ -42,19 +36,15 @@ export function getUserClient(token?: string) {
   return localClient;
 }
 
-export const installServices = (token?: string): Services => {
-  const client = getUserClient(token);
-  const assets = new Assets(client);
-  const autofill = new Autofill(client, assets);
-  const designs = new Designs(client, assets);
+export const installServices = (): Services => {
+  const client = getUserClient();
+  const designs = new Designs(client);
   const exports = new Exports(client);
   const users = new Users(client);
 
   return {
-    assets,
-    autofill,
-    designs,
     exports,
     users,
+    designs,
   };
 };

@@ -91,7 +91,7 @@ export const ContextProvider = ({
     );
   };
 
-  const services = installServices(token);
+  const services = installServices();
   const isAuthorized = !!token;
 
   const value: AppContextType = {

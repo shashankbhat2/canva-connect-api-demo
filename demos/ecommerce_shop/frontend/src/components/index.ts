@@ -4,7 +4,5 @@ export * from "./demo-alert";
 export * from "./demo-button";
 export * from "./developer-note";
 export * from "./home";
-export * from "./marketing";
 export * from "./nav-bar";
-export * from "./products";
 export * from "./sidebar";

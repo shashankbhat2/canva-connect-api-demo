@@ -19,6 +19,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useAppContext } from "src/context";
 import { Paths } from "src/routes";
+import { Collections } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -41,30 +42,11 @@ export const SideBar = () => {
       disabled: false,
     },
     {
-      text: "Products",
-      Icon: ShoppingCartIcon,
-      route: Paths.PRODUCTS,
-      disabled: !isAuthorized,
-    },
-    {
-      text: "Marketing",
-      Icon: SendIcon,
-      route: Paths.MARKETING,
-      disabled: !isAuthorized,
-    },
-    {
-      text: "Uploads",
-      Icon: UploadFileIcon,
-      route: Paths.HOME,
-      disabled: true,
-      isDemo: true,
-    },
-    {
-      text: "Orders",
-      Icon: InboxIcon,
-      route: Paths.HOME,
-      disabled: true,
-      isDemo: true,
+      text: "Designs",
+      Icon: Collections,
+      route: Paths.DESIGNS,
+      disabled: false,
+      isDemo: false,
     },
   ];
 

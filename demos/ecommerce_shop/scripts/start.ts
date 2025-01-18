@@ -8,6 +8,9 @@ import { Context } from "../../common/scripts/context";
 import { buildConfig } from "../frontend/webpack.config.cjs";
 import * as path from "path";
 
+// Define the CLI arguments interface to match Context's expected type
+interface CliArgs {}
+
 const appRunner = new AppRunner();
 
 validateEnvironmentVariables();
@@ -15,19 +18,12 @@ validateEnvironmentVariables();
 yargs(hideBin(process.argv))
   .version(false)
   .help()
-  .option("ngrok", {
-    description: "Run backend server via ngrok.",
-    type: "boolean",
-    // npm swallows command line args instead of forwarding to the script
-    default:
-      process.env.npm_config_ngrok?.toLocaleLowerCase().trim() === "true",
-  })
   .command(
     "$0",
     "Starts local development",
     () => {},
-    (args) => {
-      const ctx = new Context(args, path.join(__dirname, ".."));
+    (args: yargs.ArgumentsCamelCase<{}>) => {
+      const ctx = new Context(args as CliArgs, path.join(__dirname, ".."));
       appRunner.run(ctx, buildConfig);
     },
   )

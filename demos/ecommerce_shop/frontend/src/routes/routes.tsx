@@ -3,15 +3,12 @@ import { CampaignContextProvider } from "src/context";
 import {
   ErrorBoundaryPage,
   HomePage,
-  MarketingPage,
-  MultipleDesignsGeneratorPage,
-  ProductsPage,
-  ReturnNavPage,
-  SingleDesignGeneratorPage,
 } from "src/pages";
 import { App } from "../app";
+import Designs from "src/pages/designs";
 
 export enum Paths {
+  DESIGNS = "/designs",
   HOME = "/",
   RETURN_NAV = "/return-nav",
   MARKETING = "/marketing",
@@ -31,34 +28,9 @@ export const routes: RouteObject[] = [
         element: <HomePage />,
       },
       {
-        path: Paths.PRODUCTS,
-        element: <ProductsPage />,
-      },
-      {
-        path: Paths.MARKETING,
-        element: <MarketingPage />,
-      },
-      {
-        path: Paths.SINGLE_DESIGN_GENERATOR,
-        element: (
-          <CampaignContextProvider>
-            <SingleDesignGeneratorPage />
-          </CampaignContextProvider>
-        ),
-      },
-      {
-        path: Paths.MULTIPLE_DESIGNS_GENERATOR,
-        element: (
-          <CampaignContextProvider>
-            <MultipleDesignsGeneratorPage />
-          </CampaignContextProvider>
-        ),
+        path: Paths.DESIGNS,
+        element: <Designs />,
       },
     ],
-  },
-  {
-    path: Paths.RETURN_NAV,
-    errorElement: <ErrorBoundaryPage />,
-    element: <ReturnNavPage />,
   },
 ];

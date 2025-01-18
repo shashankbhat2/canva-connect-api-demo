@@ -10,23 +10,6 @@ export const ConnectButton = () => {
     useAppContext();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const getAndSetDisplayName = async () => {
-      const {
-        profile: { display_name },
-      } = await services.users.getUserProfile();
-      display_name && setDisplayName(display_name);
-    };
-
-    if (isAuthorized) {
-      try {
-        getAndSetDisplayName();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }, [isAuthorized]);
-
   const onConnectClick = async () => {
     try {
       setIsLoading(true);

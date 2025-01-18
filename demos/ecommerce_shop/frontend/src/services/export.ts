@@ -1,50 +1,31 @@
 import type { GetDesignExportJobResponse } from "@canva/connect-api-ts/types.gen";
 import { poll } from "../../../../common/utils/poll";
-import { ExportService } from "@canva/connect-api-ts";
 import type { Client } from "@hey-api/client-fetch";
 
 export class Exports {
   constructor(private client: Client) {}
 
-  /**
-   * Create an export and await the result of the export job.
-   * @param {Object} options - The options object.
-   * @param {string} options.designId - The ID of the design to export.
-   * @param {string} options.pageList - The pages of the design to export, by default the first page is exported.
-   * @returns {Promise<GetAutofillJobResponse>} A promise that resolves with the autofill job response.
-   */
   async exportDesign({
     designId,
-    pageList = [1],
   }: {
     designId: string;
-    pageList?: number[];
   }): Promise<GetDesignExportJobResponse> {
     try {
-      const exportJobResponse = await ExportService.createDesignExportJob({
-        client: this.client,
-        body: {
-          design_id: designId,
-          format: {
-            type: "png",
-            pages: pageList,
-            lossless: true,
-            width: 1000,
-            height: 1000,
-          },
-        },
+      const response = await this.client.post({
+        url: `/exports/${designId}`,
       });
 
-      if (exportJobResponse.error) {
-        console.error(exportJobResponse.error);
-        throw new Error(exportJobResponse.error.message);
+      if (response.error) {
+        console.error(response.error);
+        throw new Error(response.error as any);
       }
 
+      const exportJobResponse = response.data as GetDesignExportJobResponse;
       return poll(() =>
-        this.getDesignExportJobStatus(exportJobResponse.data.job.id),
+        this.getDesignExportJobStatus(exportJobResponse.job.id),
       );
     } catch (error) {
-      console.error(error);
+      console.error("Error in exportDesign:", error);
       throw error;
     }
   }
@@ -52,18 +33,20 @@ export class Exports {
   async getDesignExportJobStatus(
     exportId: string,
   ): Promise<GetDesignExportJobResponse> {
-    const result = await ExportService.getDesignExportJob({
-      client: this.client,
-      path: {
-        exportId,
-      },
-    });
+    try {
+      const response = await this.client.get({
+        url: `/exports/${exportId}/status`,
+      });
 
-    if (result.error) {
-      console.error(result.error);
-      throw new Error(result.error.message);
+      if (response.error) {
+        console.error(response.error);
+        throw new Error(response.error as any);
+      }
+
+      return response.data as GetDesignExportJobResponse;
+    } catch (error) {
+      console.error("Error in getDesignExportJobStatus:", error);
+      throw error;
     }
-
-    return result.data;
   }
 }

@@ -39,6 +39,7 @@ const endpoints = {
   AUTHORIZE: "/authorize",
   IS_AUTHORIZED: "/isauthorized",
   REVOKE: "/revoke",
+  VALIDATE_TOKEN: "/validate-token",
 };
 
 globals.redirectUri = new URL(

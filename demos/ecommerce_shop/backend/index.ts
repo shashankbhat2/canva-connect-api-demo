@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "../../common/backend/middleware/errors";
 import type { Client } from "@hey-api/client-fetch";
 import { logger } from "../../common/backend/middleware/logger";
+import designRoutes from "./routes/designs";
 
 /**
  * We extend the Express Request interface to include the custom properties
@@ -58,6 +59,7 @@ app.use(userRoutes);
 app.use(productRoutes);
 app.use(returnNavRoutes);
 app.use(exportRoutes);
+app.use(designRoutes);
 
 app.set(
   "views",

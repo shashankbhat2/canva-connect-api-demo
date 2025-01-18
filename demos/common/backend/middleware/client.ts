@@ -14,11 +14,28 @@ export const injectClient = async (
       req.signedCookies[AUTH_COOKIE_NAME],
       db,
     );
+    
+    if (!token) {
+      return res.status(401).send("No token found");
+    }
+
     const client = getUserClient(token);
+
+    try {
+      const testResponse = await client.get({
+        url: "/v1/designs",
+      });
+      if (testResponse.error) {
+        return res.status(401).send("Invalid or expired token");
+      }
+    } catch (error) {
+      return res.status(401).send("Token validation failed");
+    }
+
     req.client = client;
     req.token = token;
+    next();
   } catch (error) {
     return res.status(401).send("Unauthorized");
   }
-  next();
 };
